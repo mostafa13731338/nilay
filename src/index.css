@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-navy: #071D35;
+    --color-navy-dark: #041222;
+    --color-navy-light: #0d2a4c;
+    --color-teal: #0F8B8D;
+    --color-teal-dark: #0b686a;
+    --color-teal-light: #14a3a6;
+    --color-gold: #C9A227;
+    --color-gold-light: #dfb738;
+    --color-surface-light: #F8FAFC;
+    --color-surface-muted: #F1F5F9;
+  }
+
+  body {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F8FAFC;
+    color: #071D35;
+  }
+}
+
+/* Custom font styles for Persian and English */
+.font-persian {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
+}
+
+.font-english {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Tabular figures for data integrity */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
