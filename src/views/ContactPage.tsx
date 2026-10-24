@@ -17,7 +17,7 @@ export const ContactPage: React.FC = () => {
     name: '',
     company: '',
     email: '',
-    phoneOrWhatsApp: '',
+    phone: '',
     subject: 'Export Development Inquiry',
     message: '',
   });
@@ -310,9 +310,9 @@ export const ContactPage: React.FC = () => {
                   </label>
                   <input
                     type="tel"
-                    name="phoneOrWhatsApp"
-                    value={formData.phoneOrWhatsApp}
-                    onChange={(e) => setFormData({ ...formData, phoneOrWhatsApp: e.target.value })}
+                    name="phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full text-xs px-3.5 py-2.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-slate-50/50"
                     dir="ltr"
                     placeholder="+98 ..."

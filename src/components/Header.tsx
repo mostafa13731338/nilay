@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { siteConfig } from '../data/siteConfig';
 import { NilayLogo } from './NilayLogo';
-import { Globe, Menu, X, ChevronDown, Download } from 'lucide-react';
+import { Globe, Menu, X, ChevronDown, ArrowRight, ArrowLeft } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -15,9 +14,11 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onRequestConsultation,
 }) => {
-  const { language, toggleLanguage, t } = useLanguage();
+  const { language, toggleLanguage, dir, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
+
+  const ArrowIcon = dir === 'rtl' ? ArrowLeft : ArrowRight;
 
   const mainNavItems = [
     { id: 'home', label: t.nav.home },
@@ -44,21 +45,21 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-colors w-full">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4 w-full">
         
-        {/* Zone 1: Single clean text element wordmark */}
-        <div className="flex items-center">
+        {/* Zone 1: Brand Wordmark & Emblem */}
+        <div className="flex items-center shrink-0">
           <button
             onClick={() => handleNavClick('home')}
-            className="text-left cursor-pointer group flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F8B8D]"
+            className="text-left cursor-pointer group flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F8B8D] rounded-lg"
           >
             <NilayLogo size="md" showText={true} variant="dark" />
           </button>
         </div>
 
-        {/* Zone 2: Clean single-line text navigation links */}
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-700">
+        {/* Zone 2: Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-6 text-sm font-medium text-slate-700">
           {mainNavItems.map((item) => (
             <button
               key={item.id}
@@ -107,96 +108,98 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </nav>
 
-        {/* Zone 3: 1-2 primary actions */}
-        <div className="flex items-center gap-3">
+        {/* Zone 3: Actions & Mobile Hamburger */}
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#071D35] bg-slate-100 hover:bg-slate-200/80 rounded-md transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#0F8B8D]"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-medium text-slate-700 hover:text-[#071D35] bg-slate-100 hover:bg-slate-200/80 rounded-md transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-[#0F8B8D] shrink-0"
             title={language === 'fa' ? 'Switch to English' : 'تغییر زبان به فارسی'}
           >
-            <Globe className="w-3.5 h-3.5 text-[#0F8B8D]" />
-            <span>{t.nav.switchLanguage}</span>
+            <Globe className="w-3.5 h-3.5 text-[#0F8B8D] shrink-0" />
+            <span className="text-[11px] sm:text-xs font-medium">{t.nav.switchLanguage}</span>
           </button>
 
-          {/* Direct Download ZIP Link */}
-          <a
-            href="/nilay-trade.zip"
-            download="nilay-trade.zip"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0F8B8D] hover:text-white bg-[#0F8B8D]/10 hover:bg-[#0F8B8D] border border-[#0F8B8D]/30 rounded-md transition-all whitespace-nowrap"
-            title={language === 'fa' ? 'دانلود فایل زیپ کامل پروژه' : 'Download Full Project ZIP'}
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>{language === 'fa' ? 'دانلود فایل زیپ' : 'Download ZIP'}</span>
-          </a>
-
-          {/* Primary CTA */}
+          {/* Primary Consultation CTA (Visible on tablet & desktop, clean in drawer on mobile) */}
           <button
             onClick={onRequestConsultation}
-            className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-semibold text-white bg-[#071D35] hover:bg-[#0d2a4c] rounded-md transition-all shadow-sm hover:shadow hover:ring-1 hover:ring-[#0F8B8D] cursor-pointer whitespace-nowrap"
+            className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-semibold text-white bg-[#071D35] hover:bg-[#0d2a4c] rounded-md transition-all shadow-sm hover:shadow hover:ring-1 hover:ring-[#0F8B8D] cursor-pointer whitespace-nowrap shrink-0"
           >
             {t.nav.requestConsultation}
           </button>
 
-          {/* Mobile menu toggle */}
+          {/* Mobile Menu Toggle Button ☰ */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F8B8D] cursor-pointer"
-            aria-label="Toggle menu"
+            className="lg:hidden p-1.5 sm:p-2 text-slate-700 hover:text-[#0F8B8D] hover:bg-slate-100 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0F8B8D] cursor-pointer shrink-0 transition-colors"
+            aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-6 h-6 text-slate-900" /> : <Menu className="w-6 h-6 text-slate-900" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu (Responsive, full height options, no overflow) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-1 shadow-xl">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 py-1">
+        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-2xl animate-in fade-in slide-in-from-top-2 max-h-[85vh] overflow-y-auto">
+          
+          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2">
             {language === 'fa' ? 'بخش‌های اصلی' : 'Main Navigation'}
           </div>
-          {mainNavItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              className={`w-full text-start px-3 py-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                activeTab === item.id
-                  ? 'bg-slate-100 text-[#0F8B8D] font-bold'
-                  : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-
-          <div className="pt-2 border-t border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 py-1">
-            {language === 'fa' ? 'اطلاعات بیشتر' : 'Company & Insights'}
+          
+          <div className="space-y-1">
+            {mainNavItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`w-full text-start px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer flex items-center justify-between ${
+                  activeTab === item.id
+                    ? 'bg-[#0F8B8D]/10 text-[#0F8B8D]'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <span>{item.label}</span>
+                {activeTab === item.id && <ArrowIcon className="w-3.5 h-3.5 text-[#0F8B8D]" />}
+              </button>
+            ))}
           </div>
-          {secondaryNavItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              className={`w-full text-start px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                activeTab === item.id
-                  ? 'bg-slate-100 text-[#0F8B8D] font-bold'
-                  : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
 
-          <div className="pt-4 px-2">
+          <div className="pt-2 border-t border-slate-100">
+            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2 mb-1">
+              {language === 'fa' ? 'سایر صفحات' : 'Company & Insights'}
+            </div>
+            <div className="space-y-1">
+              {secondaryNavItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`w-full text-start px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer flex items-center justify-between ${
+                    activeTab === item.id
+                      ? 'bg-[#0F8B8D]/10 text-[#0F8B8D] font-semibold'
+                      : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {activeTab === item.id && <ArrowIcon className="w-3.5 h-3.5 text-[#0F8B8D]" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Primary Mobile CTA inside Drawer */}
+          <div className="pt-2 border-t border-slate-100">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onRequestConsultation();
               }}
-              className="w-full py-3 text-center text-sm font-semibold text-white bg-[#071D35] rounded-md shadow hover:bg-[#0d2a4c]"
+              className="w-full py-3 px-4 text-center text-xs font-bold text-white bg-[#071D35] hover:bg-[#0d2a4c] rounded-lg shadow-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              {t.nav.requestConsultation}
+              <span>{t.nav.requestConsultation}</span>
+              <ArrowIcon className="w-4 h-4" />
             </button>
           </div>
+
         </div>
       )}
     </header>

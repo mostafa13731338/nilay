@@ -2,7 +2,7 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteConfig } from '../data/siteConfig';
 import { NilayLogo } from './NilayLogo';
-import { Mail, Phone, MessageSquare, Instagram, Linkedin, ShieldCheck, ArrowUpRight, Download } from 'lucide-react';
+import { Mail, Phone, MessageSquare, Instagram, Linkedin, ShieldCheck, ArrowUpRight } from 'lucide-react';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
@@ -234,14 +234,6 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onRequestConsultat
           </div>
           
           <div className="flex flex-wrap items-center gap-4 text-[11px]">
-            <a
-              href="/nilay-trade.zip"
-              download="nilay-trade.zip"
-              className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0F8B8D]/20 hover:bg-[#0F8B8D] text-teal-300 hover:text-white border border-[#0F8B8D]/40 rounded-md transition-all font-medium"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>{language === 'fa' ? 'دانلود فایل زیپ پروژه (ZIP)' : 'Download Project ZIP'}</span>
-            </a>
             <span>{language === 'fa' ? 'بنیان‌گذار: مصطفی خادمی' : 'Founder & CEO: Mostafa Khademi'}</span>
             <span>·</span>
             <span>B2B International Trade</span>

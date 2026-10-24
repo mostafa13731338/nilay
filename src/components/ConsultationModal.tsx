@@ -29,7 +29,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     company: '',
     role: '',
     email: '',
-    phoneOrWhatsApp: '',
+    phone: '',
     topic: defaultTopic,
     productCategory: 'Agriculture & Food',
     message: '',
@@ -39,7 +39,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phoneOrWhatsApp) {
+    if (!formData.name || !formData.email || !formData.phone) {
       return;
     }
 
@@ -72,7 +72,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
       company: '',
       role: '',
       email: '',
-      phoneOrWhatsApp: '',
+      phone: '',
       topic: '',
       productCategory: 'Agriculture & Food',
       message: '',
@@ -209,10 +209,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   </label>
                   <input
                     type="tel"
-                    name="phoneOrWhatsApp"
+                    name="phone"
                     required
-                    value={formData.phoneOrWhatsApp}
-                    onChange={(e) => setFormData({ ...formData, phoneOrWhatsApp: e.target.value })}
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-slate-50/50"
                     dir="ltr"
                     placeholder="+98 912 000 0000"

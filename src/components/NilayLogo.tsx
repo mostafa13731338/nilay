@@ -27,16 +27,20 @@ export const NilayLogo: React.FC<NilayLogoProps> = ({
   return (
     <div
       dir="ltr"
-      className={`inline-flex items-center gap-3 select-none text-left ${className}`}
+      className={`inline-flex items-center gap-2 sm:gap-3 select-none text-left shrink-0 ${className}`}
     >
       {/* SVG Emblem faithfully matching the official Nilay Trade logo */}
       <svg
-        width={currentSize.width}
-        height={currentSize.height}
         viewBox="0 0 200 200"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="shrink-0"
+        className={`shrink-0 ${
+          size === 'sm'
+            ? 'w-7 h-7 sm:w-8 sm:h-8'
+            : size === 'lg'
+            ? 'w-14 h-14 sm:w-16 sm:h-16'
+            : 'w-8 h-8 sm:w-11 sm:h-11'
+        }`}
       >
         <defs>
           {/* Gradient for the rising export growth arrow from teal to gold */}
@@ -121,7 +125,7 @@ export const NilayLogo: React.FC<NilayLogoProps> = ({
       {/* Typography: Exactly "Nilay" in Navy, "Trade" in Teal, strictly LTR */}
       {showText && (
         <div dir="ltr" className="flex flex-col text-left leading-tight shrink-0">
-          <div className="flex items-center gap-1.5 text-lg sm:text-xl font-bold tracking-tight">
+          <div className="flex items-center gap-1 sm:gap-1.5 text-base sm:text-xl font-bold tracking-tight">
             <span className={isDarkBg ? "text-white" : "text-[#071D35]"}>
               Nilay
             </span>
@@ -129,7 +133,7 @@ export const NilayLogo: React.FC<NilayLogoProps> = ({
               Trade
             </span>
           </div>
-          <span className="text-[10px] tracking-wider uppercase font-semibold text-slate-400">
+          <span className="text-[9px] sm:text-[10px] tracking-wider uppercase font-semibold text-slate-400">
             International B2B
           </span>
         </div>

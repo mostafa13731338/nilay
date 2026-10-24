@@ -9,6 +9,7 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
 import { ExportReadinessModal } from './components/ExportReadinessModal';
+import { DownloadPackageBar } from './components/DownloadPackageBar';
 
 // Views
 import { HomePage } from './views/HomePage';
@@ -45,7 +46,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#071D35]">
+      <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-[#071D35] overflow-x-hidden w-full">
         
         {/* Top Navigation */}
         <Header
@@ -55,7 +56,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1">
+        <main className="flex-1 overflow-x-hidden w-full">
           {activeTab === 'home' && (
             <HomePage
               setActiveTab={setActiveTab}
@@ -137,6 +138,9 @@ export default function App() {
           onClose={() => setIsExportCheckOpen(false)}
           onOpenConsultation={() => handleOpenConsultation('Export Readiness Assessment Follow-up')}
         />
+
+        {/* Floating Download Package Trigger */}
+        <DownloadPackageBar />
 
       </div>
     </LanguageProvider>
