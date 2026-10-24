@@ -9,7 +9,7 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ConsultationModal } from './components/ConsultationModal';
 import { ExportReadinessModal } from './components/ExportReadinessModal';
-import { DownloadPackageBar } from './components/DownloadPackageBar';
+
 
 // Views
 import { HomePage } from './views/HomePage';
@@ -139,8 +139,7 @@ export default function App() {
           onOpenConsultation={() => handleOpenConsultation('Export Readiness Assessment Follow-up')}
         />
 
-        {/* Floating Download Package Trigger */}
-        <DownloadPackageBar />
+
 
       </div>
     </LanguageProvider>
