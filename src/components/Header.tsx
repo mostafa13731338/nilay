@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteConfig } from '../data/siteConfig';
 import { NilayLogo } from './NilayLogo';
-import { Globe, Menu, X, ChevronDown } from 'lucide-react';
+import { Globe, Menu, X, ChevronDown, Download } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -118,6 +118,17 @@ export const Header: React.FC<HeaderProps> = ({
             <Globe className="w-3.5 h-3.5 text-[#0F8B8D]" />
             <span>{t.nav.switchLanguage}</span>
           </button>
+
+          {/* Direct Download ZIP Link */}
+          <a
+            href="/nilay-trade.zip"
+            download="nilay-trade.zip"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#0F8B8D] hover:text-white bg-[#0F8B8D]/10 hover:bg-[#0F8B8D] border border-[#0F8B8D]/30 rounded-md transition-all whitespace-nowrap"
+            title={language === 'fa' ? 'دانلود فایل زیپ کامل پروژه' : 'Download Full Project ZIP'}
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>{language === 'fa' ? 'دانلود فایل زیپ' : 'Download ZIP'}</span>
+          </a>
 
           {/* Primary CTA */}
           <button

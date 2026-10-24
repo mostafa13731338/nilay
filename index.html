@@ -17,6 +17,29 @@
   </head>
   <body class="bg-[#F8FAFC] text-[#071D35] antialiased selection:bg-[#0F8B8D]/20 selection:text-[#071D35]">
     <div id="root"></div>
+
+    <!-- Hidden Netlify form template for SPA build-time detection -->
+    <form name="consultation" netlify netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="consultation" />
+      <input type="text" name="name" />
+      <input type="text" name="company" />
+      <input type="email" name="email" />
+      <input type="tel" name="phoneOrWhatsApp" />
+      <input type="text" name="productCategory" />
+      <input type="text" name="topic" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="name" />
+      <input type="text" name="company" />
+      <input type="email" name="email" />
+      <input type="tel" name="phoneOrWhatsApp" />
+      <input type="text" name="subject" />
+      <textarea name="message"></textarea>
+    </form>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

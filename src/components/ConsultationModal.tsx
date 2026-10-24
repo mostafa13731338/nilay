@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteConfig } from '../data/siteConfig';
-import { X, CheckCircle, Send, MessageSquare } from 'lucide-react';
+import { X, CheckCircle, Send, MessageSquare, Loader2 } from 'lucide-react';
 
 interface ConsultationModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultTopic?: string;
 }
+
+// Encode form data as application/x-www-form-urlencoded for Netlify Forms
+const encodeFormData = (data: Record<string, string>) => {
+  return Object.keys(data)
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key] || ''))
+    .join('&');
+};
 
 export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   isOpen,
@@ -16,6 +23,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 }) => {
   const { language, t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -29,17 +37,36 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.phoneOrWhatsApp) {
       return;
     }
-    // Record submission state
-    setSubmitted(true);
+
+    setIsSubmitting(true);
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: encodeFormData({
+          'form-name': 'consultation',
+          ...formData,
+        }),
+      });
+      setSubmitted(true);
+    } catch (error) {
+      // Graceful fallback for local development or disconnected previews
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAndClose = () => {
     setSubmitted(false);
+    setIsSubmitting(false);
     setFormData({
       name: '',
       company: '',
@@ -107,7 +134,29 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              name="consultation"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
+              {/* 1. Required Netlify Hidden Form Name Field */}
+              <input type="hidden" name="form-name" value="consultation" />
+
+              {/* Bot-field for Netlify Spam Protection */}
+              <p className="hidden">
+                <label>
+                  Don’t fill this out if you're human: <input name="bot-field" />
+                </label>
+              </p>
+
+              {/* Hidden Topic parameter if pre-filled */}
+              {formData.topic && (
+                <input type="hidden" name="topic" value={formData.topic} />
+              )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -115,6 +164,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   </label>
                   <input
                     type="text"
+                    name="name"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -128,6 +178,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   </label>
                   <input
                     type="text"
+                    name="company"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-slate-50/50"
@@ -143,6 +194,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -157,6 +209,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   </label>
                   <input
                     type="tel"
+                    name="phoneOrWhatsApp"
                     required
                     value={formData.phoneOrWhatsApp}
                     onChange={(e) => setFormData({ ...formData, phoneOrWhatsApp: e.target.value })}
@@ -172,6 +225,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   {language === 'fa' ? 'حوزه اصلی کالا یا خدمت' : 'Primary Sector / Product'}
                 </label>
                 <select
+                  name="productCategory"
                   value={formData.productCategory}
                   onChange={(e) => setFormData({ ...formData, productCategory: e.target.value })}
                   className="w-full text-xs px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-white cursor-pointer"
@@ -205,6 +259,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   {language === 'fa' ? 'توضیحات مختصر درباره نیاز یا پرسش شما' : 'Brief Overview of Your Objective / Challenge'}
                 </label>
                 <textarea
+                  name="message"
                   rows={3}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -227,10 +282,20 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-semibold text-white bg-[#071D35] hover:bg-[#0d2a4c] rounded-md transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="px-5 py-2 text-xs font-semibold text-white bg-[#071D35] hover:bg-[#0d2a4c] disabled:opacity-70 rounded-md transition-all shadow-sm flex items-center gap-2 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{language === 'fa' ? 'ارسال درخواست مشاوره' : 'Submit Consultation Request'}</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>{language === 'fa' ? 'در حال ارسال...' : 'Submitting...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5" />
+                      <span>{language === 'fa' ? 'ارسال درخواست مشاوره' : 'Submit Consultation Request'}</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

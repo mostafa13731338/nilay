@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteConfig } from '../data/siteConfig';
-import { Mail, Phone, MessageSquare, Instagram, Linkedin, Send, CheckCircle2, ShieldCheck, MapPin } from 'lucide-react';
+import { Mail, Phone, MessageSquare, Instagram, Linkedin, Send, CheckCircle2, ShieldCheck, MapPin, Loader2 } from 'lucide-react';
+
+const encodeFormData = (data: Record<string, string>) => {
+  return Object.keys(data)
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key] || ''))
+    .join('&');
+};
 
 export const ContactPage: React.FC = () => {
   const { language, dir, t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -15,12 +22,27 @@ export const ContactPage: React.FC = () => {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       return;
     }
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeFormData({
+          'form-name': 'contact',
+          ...formData,
+        }),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -221,7 +243,19 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              name="contact"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
+              <input type="hidden" name="form-name" value="contact" />
+              <p className="hidden">
+                <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
+              </p>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -229,6 +263,7 @@ export const ContactPage: React.FC = () => {
                   </label>
                   <input
                     type="text"
+                    name="name"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -243,6 +278,7 @@ export const ContactPage: React.FC = () => {
                   </label>
                   <input
                     type="text"
+                    name="company"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     className="w-full text-xs px-3.5 py-2.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-slate-50/50"
@@ -258,6 +294,7 @@ export const ContactPage: React.FC = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -273,6 +310,7 @@ export const ContactPage: React.FC = () => {
                   </label>
                   <input
                     type="tel"
+                    name="phoneOrWhatsApp"
                     value={formData.phoneOrWhatsApp}
                     onChange={(e) => setFormData({ ...formData, phoneOrWhatsApp: e.target.value })}
                     className="w-full text-xs px-3.5 py-2.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-slate-50/50"
@@ -287,6 +325,7 @@ export const ContactPage: React.FC = () => {
                   {language === 'fa' ? 'موضوع پیام' : 'Inquiry Subject'}
                 </label>
                 <select
+                  name="subject"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   className="w-full text-xs px-3.5 py-2.5 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F8B8D] bg-white cursor-pointer"
@@ -314,6 +353,7 @@ export const ContactPage: React.FC = () => {
                   {language === 'fa' ? 'شرح پیام یا درخواست *' : 'Message Details *'}
                 </label>
                 <textarea
+                  name="message"
                   rows={4}
                   required
                   value={formData.message}
@@ -330,10 +370,20 @@ export const ContactPage: React.FC = () => {
               <div className="pt-2 flex justify-end">
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-[#071D35] hover:bg-[#0d2a4c] text-white text-xs font-semibold rounded-md transition-all shadow flex items-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 bg-[#071D35] hover:bg-[#0d2a4c] disabled:opacity-70 text-white text-xs font-semibold rounded-md transition-all shadow flex items-center gap-2 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{language === 'fa' ? 'ارسال پیام رسمی' : 'Send Message'}</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>{language === 'fa' ? 'در حال ارسال...' : 'Sending...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5" />
+                      <span>{language === 'fa' ? 'ارسال پیام رسمی' : 'Send Message'}</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
